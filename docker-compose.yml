@@ -37,20 +37,6 @@ services:
       - 5601:5601
     networks:
       - ad-alpha
-#  api:
-#    image: golang:1.6.1-alpine
-#    volumes:
-#      - .:/go/src/go-with-compose
-#    working_dir: /go/src/AdAlpha/api
-#    command: go run main.go
-#    depends_on:
-#      - postgres-db
-#      - elastic
-#    links:
-#      - postgres-db
-#      - elastic
-#    ports:
-#      - 5431:5431
 
 networks:
   ad-alpha:
