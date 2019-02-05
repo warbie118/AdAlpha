@@ -85,23 +85,24 @@ func TestNewRaiseWhenRequestBodyIsNilReturnsHttpCode400(t *testing.T) {
 
 func TestNewRaiseWhenRequestBodyDoesNotMapToInvestStructReturnsHttpCode400(t *testing.T) {
 	a.Initialise()
-	req, _ := http.NewRequest("POST", "/instruction/sell", bytes.NewBuffer(sellRequestBody()))
+	req, _ := http.NewRequest("POST", "/instruction/raise", bytes.NewBuffer(sellRequestBody()))
 	resp := executeRequest(req)
 	checkResponseCode(t, http.StatusBadRequest, resp.Code)
 }
 
 func buyRequestBody() []byte {
-	return []byte(`{"investor_id":"1", "isin":"TESTISIN01", "units":"5"`)
+	return []byte(`{"investor_id":1,"isin":"test01","units":5}`)
+
 }
 
 func investRequestBody() []byte {
-	return []byte(`{"investor_id":"1", "isin":"TESTISIN01", "currency_code":"GBP", "amount":"5"`)
+	return []byte(`{"investor_id":1, "isin":"test01", "currency_code":"GBP", "amount":5.55}`)
 }
 
 func sellRequestBody() []byte {
-	return []byte(`{"investor_id":"1", "isin":"TESTISIN01", "units":"5"`)
+	return []byte(`{"investor_id":1, "isin":"test01", "units":5}`)
 }
 
 func raiseRequestBody() []byte {
-	return []byte(`{"investor_id":"1", "isin":"TESTISIN01", "currency_code":"GBP", "amount":"5"`)
+	return []byte(`{"investor_id":1, "isin":"test01", "currency_code":"GBP", "amount":11.25}`)
 }
