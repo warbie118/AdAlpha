@@ -1,0 +1,19 @@
+version: "3.1"
+
+services:
+  postgres-db-test:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    ports:
+      - 5001:5432
+    volumes:
+      - ./db-init-test.sql:/docker-entrypoint-initdb.d/db-init-test.sql
+    networks:
+      - ad-alpha_test
+
+networks:
+  ad-alpha_test:
