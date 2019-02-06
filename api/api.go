@@ -1,6 +1,11 @@
 package api
 
-import "github.com/gorilla/mux"
+import (
+	"AdAlpha/db"
+	"encoding/json"
+	"github.com/gorilla/mux"
+	"net/http"
+)
 
 type Api struct {
 	Router *mux.Router
@@ -11,4 +16,25 @@ func (a *Api) Initialise() {
 	a.Router = mux.NewRouter()
 	a.InitialiseInstructionRoutes()
 	a.InitialiseHistoryRoutes()
+}
+
+//create a connection to DB
+func GetDbConnection() db.Db {
+	d := db.Db{}
+	d.Initialise()
+	return d
+}
+
+//returns json to the api request
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	response, _ := json.Marshal(payload)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
+}
+
+//calls respondWithJson to return error to api request
+func respondWithError(w http.ResponseWriter, code int, message string) {
+	respondWithJSON(w, code, map[string]string{"error": message})
 }
