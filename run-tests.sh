@@ -19,6 +19,13 @@ else
     echo "MODEL - PASS"
 fi
 cd ..
+cd exchange_rate
+if go test -v | grep -q 'FAIL'; then
+    echo "EXCHANGE_RATE - FAILED (run 'go test' in package for details)"
+else
+    echo "EXCHANGE_RATE - PASS"
+fi
+cd ..
 
 docker-compose -f docker-compose-test.yml down
 
