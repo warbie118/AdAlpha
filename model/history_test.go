@@ -10,13 +10,13 @@ import (
 func TestGetInvestorHistory(t *testing.T) {
 	SetTestingEnvVariables()
 	dbCon := model.GetDbConnection()
-	history, err := model.GetInvestorHistory(dbCon.Pg, 1)
+	history, err := model.GetInvestorHistory(dbCon.Pg, 6)
 
 	if err != nil {
 		t.Errorf("error thrown - " + err.Error())
 	}
-	if len(history) != 4 {
-		t.Errorf("Wrong amount of history items, expected %d, got %d", 4, len(history))
+	if len(history) != 2 {
+		t.Errorf("Wrong amount of history items, expected %d, got %d", 2, len(history))
 	}
 }
 

@@ -26,7 +26,7 @@ func TestGetInvestorHistoryWhenInvestorIdIsNotProvidedReturnsHttpCode400(t *test
 }
 
 func TestGetInvestorHistoryWhenInvestorIdIsValidReturnsHttpCode200(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/history/investor/2", nil)
+	req, _ := http.NewRequest("GET", "/history/investor/3", nil)
 	resp := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, resp.Code)
 

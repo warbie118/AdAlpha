@@ -4,6 +4,7 @@ import (
 	"AdAlpha/db"
 	"AdAlpha/price_scrape"
 	"database/sql"
+	"errors"
 )
 
 //checks if valid currency code
@@ -62,5 +63,9 @@ func RemoveAssetsInPortfolio(db *sql.DB, u float64, id int, isin string) error {
 
 // Calls the scraper to get current price of given asset
 func getCurrentPrice(isin string) (error, float64) {
-	return price_scrape.GetCurrentPrice(isin)
+	err, price := price_scrape.GetCurrentPrice(isin)
+	if price == 0 {
+		err = errors.New("Issue getting current asset price")
+	}
+	return err, price
 }

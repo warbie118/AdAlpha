@@ -2,6 +2,7 @@ package api
 
 import (
 	"AdAlpha/db"
+	"AdAlpha/model"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -35,7 +36,7 @@ func GetInvestorHistory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	history, err := db.GetInvestorHistory(dbCon.Pg, id)
+	history, err := model.GetInvestorHistory(dbCon.Pg, id)
 
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())

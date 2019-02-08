@@ -29,8 +29,10 @@ func NewBuy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//implement calculate func /model/buy
-	buyReq.CalculateBuy()
+	err := buyReq.New()
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Issue calculating buy")
+	}
 
 	respondWithJSON(w, http.StatusOK, buyReq)
 
@@ -51,7 +53,10 @@ func NewInvest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	investReq.CalculateInvest()
+	err := investReq.New()
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Issue calculating invest")
+	}
 
 	respondWithJSON(w, http.StatusOK, investReq)
 
@@ -70,7 +75,11 @@ func NewRaise(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	raiseReq.CalculateRaise()
+
+	err := raiseReq.New()
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Issue calculating raise")
+	}
 
 	respondWithJSON(w, http.StatusOK, raiseReq)
 
@@ -89,7 +98,11 @@ func NewSell(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	sellReq.CalculateSell()
+
+	err := sellReq.NewSell()
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Issue calculating sell")
+	}
 
 	respondWithJSON(w, http.StatusOK, sellReq)
 
