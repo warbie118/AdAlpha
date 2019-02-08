@@ -32,3 +32,18 @@ func TestSell_IsValidReturnsTrueWhenAllFieldsAreValid(t *testing.T) {
 		t.Errorf("Expected response %t. got %t\n", true, false)
 	}
 }
+
+func TestSell_CalculateSellIsSuccessful(t *testing.T) {
+	SetTestingEnvVariables()
+	s := model.Sell{3, "GB00BQ1YHQ70", 3}
+	err := model.CalculateSell(5.50, s)
+	if err != nil {
+		t.Error("Expected no errors")
+	}
+
+	units, valid := correctNumberOfUnitsInPortfolioTable(3, "GB00BQ1YHQ70", 2, 5)
+
+	if !valid {
+		t.Errorf("Wrong number of units in investor portfolio, expected 2, got %v", units)
+	}
+}

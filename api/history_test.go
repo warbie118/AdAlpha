@@ -14,7 +14,7 @@ func init() {
 }
 
 func TestGetInvestorHistoryWhenProvidedInvestorIdDoesNotExistReturnsHttpCode404(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/history/investor/3", nil)
+	req, _ := http.NewRequest("GET", "/history/investor/3000", nil)
 	resp := executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, resp.Code)
 }
@@ -26,7 +26,7 @@ func TestGetInvestorHistoryWhenInvestorIdIsNotProvidedReturnsHttpCode400(t *test
 }
 
 func TestGetInvestorHistoryWhenInvestorIdIsValidReturnsHttpCode200(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/history/investor/2", nil)
+	req, _ := http.NewRequest("GET", "/history/investor/3", nil)
 	resp := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, resp.Code)
 
@@ -42,14 +42,14 @@ func TestGetInvestorHistoryWhenInvestorIdIsValidReturnsHttpCode200(t *testing.T)
 	}
 
 	h1 := history[0]
-	if h1.Instruction != "BUY" && h1.Isin != "GB00BG0QP828" && h1.Amount.Float64 != 10.99 &&
-		h1.CurrencyCode.String != "GBP" && h1.Asset != "Legal & General Japan Index Trust C Class Accumulation" {
+	if h1.Instruction != "BUY" && h1.Isin != "GB00BG0QP828" && h1.Amount != 10.99 &&
+		h1.CurrencyCode != "GBP" && h1.Asset != "Legal & General Japan Index Trust C Class Accumulation" {
 		t.Error("Does not match expected data")
 	}
 
 	h2 := history[1]
-	if h2.Instruction != "BUY" && h2.Isin != "GB00BG0QP828" && h2.Amount.Float64 != 10.99 &&
-		h2.CurrencyCode.String != "GBP" && h2.Asset != "Legal & General Japan Index Trust C Class Accumulation" {
+	if h2.Instruction != "BUY" && h2.Isin != "GB00BG0QP828" && h2.Amount != 10.99 &&
+		h2.CurrencyCode != "GBP" && h2.Asset != "Legal & General Japan Index Trust C Class Accumulation" {
 		t.Error("Does not match expected data")
 	}
 }

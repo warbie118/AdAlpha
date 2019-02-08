@@ -32,3 +32,17 @@ func TestBuy_IsValidReturnsTrueWhenAllFieldsAreValid(t *testing.T) {
 		t.Errorf("Expected response %t. got %t\n", true, false)
 	}
 }
+
+func TestBuy_CalculateBuyIsSuccessful(t *testing.T) {
+	SetTestingEnvVariables()
+	b := model.Buy{2, "GB00BQ1YHQ70", 2}
+	err := model.CalculateBuy(5.50, b)
+	if err != nil {
+		t.Error("Expected no errors")
+	}
+
+	units, valid := correctNumberOfUnitsInPortfolioTable(2, "GB00BQ1YHQ70", 2, 0)
+	if !valid {
+		t.Errorf("Wrong number of units in investor portfolio, expected 2, got %v", units)
+	}
+}
