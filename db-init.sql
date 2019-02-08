@@ -12,17 +12,19 @@ CREATE TABLE investors (
 CREATE TABLE portfolio (
  investor_id  INT NOT NULL REFERENCES investors(investor_id),
  isin         VARCHAR NOT NULL REFERENCES assets(isin),
- units        DECIMAL NOT NULL
+ units        DECIMAL NOT NULL,
+ constraint units_nonnegative check (units >= 0)
 );
 
 CREATE TABLE instructions (
  instruction_id SERIAL PRIMARY KEY,
  investor_id    INT NOT NULL REFERENCES investors(investor_id),
  isin           VARCHAR NOT NULL REFERENCES assets(isin),
+ asset_price    NUMERIC(10,2) NOT NULL,
  instruction    VARCHAR NOT NULL,
  currency_code  VARCHAR(3),
- amount         VARCHAR,
- units          VARCHAR
+ amount         NUMERIC(10,2),
+ units          DECIMAL
 );
 
 INSERT INTO assets VALUES ('IE00B52L4369', 'BlackRock Institutional Cash Series Sterling Liquidity Agency Inc');
