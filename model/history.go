@@ -9,7 +9,7 @@ type History struct {
 	Isin         string  `json:"Isin"`
 	Asset        string  `json:"Asset"`
 	AssetPrice   float64 `json:"Asset_price"`
-	Units        int     `json:"Units"`
+	Units        float64 `json:"Units"`
 	CurrencyCode string  `json:"CurrencyCode"`
 	Amount       float64 `json:"Amount"`
 }
