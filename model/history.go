@@ -1,7 +1,10 @@
 package model
 
 import (
+	"AdAlpha/logger"
 	"database/sql"
+	"fmt"
+	"time"
 )
 
 type History struct {
@@ -19,6 +22,8 @@ func GetInvestorHistory(db *sql.DB, id int) ([]History, error) {
 	rows, err := db.Query(
 		"SELECT i.instruction, i.isin, a.asset_name, i.asset_price, i.units, i.currency_code, i.amount FROM instructions i, assets a WHERE investor_id=$1 AND i.isin=a.isin", id)
 	if err != nil {
+		esLog.LogError(logger.CreateLog("ERROR",
+			fmt.Sprintf("Getting investor instruction history error, investor_id: %d", id), err.Error(), logger.Trace(), time.Now()))
 		return nil, err
 	}
 
@@ -29,6 +34,8 @@ func GetInvestorHistory(db *sql.DB, id int) ([]History, error) {
 	for rows.Next() {
 		var h History
 		if err := rows.Scan(&h.Instruction, &h.Isin, &h.Asset, &h.AssetPrice, &h.Units, &h.CurrencyCode, &h.Amount); err != nil {
+			esLog.LogError(logger.CreateLog("ERROR",
+				fmt.Sprintf("Getting investor instruction history error, investor_id: %d", id), err.Error(), logger.Trace(), time.Now()))
 			return nil, err
 		}
 		history = append(history, h)

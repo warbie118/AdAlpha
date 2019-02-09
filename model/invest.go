@@ -2,7 +2,10 @@ package model
 
 import (
 	"AdAlpha/exchange_rate"
+	"AdAlpha/logger"
+	"fmt"
 	"os"
+	"time"
 )
 
 type Invest struct {
@@ -22,13 +25,21 @@ func (i *Invest) IsValid() bool {
 
 //Initialises a new invest, gets the current price of the asset before calling CalculateInvest
 func (i *Invest) New() error {
+
+	esLog.LogInfo(logger.CreateInfoLog("INFO",
+		fmt.Sprintf("New Invest for investor_id: %d, isin: %s", i.InvestorId, i.Isin), time.Now()))
+
 	err, price := getCurrentPrice(i.Isin)
 	if err != nil {
+		esLog.LogError(logger.CreateLog("ERROR",
+			fmt.Sprintf("Problem getting current asset price for isin: %s", i.Isin), err.Error(), logger.Trace(), time.Now()))
 		return err
 	}
 
 	err = CalculateInvest(price, *i)
 	if err != nil {
+		esLog.LogError(logger.CreateLog("ERROR",
+			fmt.Sprintf("Problem calculating invest for investor_id: %d, isin: %s", i.InvestorId, i.Isin), err.Error(), logger.Trace(), time.Now()))
 		return err
 	}
 	return err
@@ -48,6 +59,8 @@ func CalculateInvest(assetPrice float64, i Invest) error {
 		err, rate := exchange_rate.GetExchangeRate(i.CurrencyCode, os.Getenv("BASE_CC"))
 		excr = rate
 		if err != nil {
+			esLog.LogError(logger.CreateLog("ERROR",
+				fmt.Sprintf("Problem getting exchange rate, currency code: %s", i.CurrencyCode), err.Error(), logger.Trace(), time.Now()))
 			return err
 		}
 	}
@@ -56,12 +69,23 @@ func CalculateInvest(assetPrice float64, i Invest) error {
 
 	err := AddAssetsInPortfolio(dbCon.Pg, units, i.InvestorId, i.Isin)
 	if err != nil {
+		esLog.LogError(logger.CreateLog("ERROR",
+			fmt.Sprintf("Problem adding asssets to portfolio, investor_id: %d, isin: %s, units: %v",
+				i.InvestorId, i.Isin, units), err.Error(), logger.Trace(), time.Now()))
 		return err
 	}
 
 	err = AddInvestorHistory(dbCon.Pg, i.InvestorId, "INVEST", i.Isin, assetPrice, units, i.CurrencyCode, i.Amount)
 	if err != nil {
-		RemoveAssetsInPortfolio(dbCon.Pg, units, i.InvestorId, i.Isin)
+		esLog.LogError(logger.CreateLog("ERROR",
+			fmt.Sprintf("Problem adding invest instruction to instructions, investor_id: %d, isin: %s, instruction: %s, asset price: %v, currency code: %s, amount: %v, units: %v",
+				i.InvestorId, i.Isin, "INVEST", assetPrice, "GBP", assetPrice*units, units), err.Error(), logger.Trace(), time.Now()))
+		err := RemoveAssetsInPortfolio(dbCon.Pg, units, i.InvestorId, i.Isin)
+		if err != nil {
+			esLog.LogError(logger.CreateLog("ERROR",
+				fmt.Sprintf("Problem rolling back assets to portfolio after failure, investor_id: %d, isin: %s, units: %v",
+					i.InvestorId, i.Isin, units), err.Error(), logger.Trace(), time.Now()))
+		}
 		return err
 	}
 

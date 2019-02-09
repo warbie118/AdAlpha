@@ -1,16 +1,20 @@
 package db
 
 import (
+	"AdAlpha/logger"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
 	"log"
 	"os"
+	"time"
 )
 
 type Db struct {
 	Pg *sql.DB
 }
+
+var esLog = logger.GetInstance()
 
 //Initialises DB connection
 func (db *Db) Initialise() {
@@ -20,6 +24,7 @@ func (db *Db) Initialise() {
 	var err error
 	db.Pg, err = sql.Open("postgres", connectionString)
 	if err != nil {
+		esLog.LogError(logger.CreateLog("ERROR", "Issue initialising db", err.Error(), logger.Trace(), time.Now()))
 		log.Fatal(err)
 	}
 }

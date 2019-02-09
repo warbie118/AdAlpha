@@ -2,10 +2,16 @@ package model
 
 import (
 	"AdAlpha/db"
+	"AdAlpha/logger"
 	"AdAlpha/price_scrape"
 	"database/sql"
 	"errors"
+	"fmt"
+	"time"
 )
+
+//adds a logger instance for package to use
+var esLog = logger.GetInstance()
 
 //checks if valid currency code
 func ValidCurrencyCode(cc string) bool {
@@ -56,6 +62,11 @@ func RemoveAssetsInPortfolio(db *sql.DB, u float64, id int, isin string) error {
 			u, id, isin)
 
 	if err != nil {
+		if err != nil {
+			esLog.LogError(logger.CreateLog("ERROR",
+				fmt.Sprintf("Failed to remove assets from portfolio, investor_id: %d, isin: %s, units: %v",
+					id, isin, u), err.Error(), logger.Trace(), time.Now()))
+		}
 		return err
 	}
 	return err
