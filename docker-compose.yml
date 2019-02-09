@@ -58,9 +58,17 @@ services:
       - prod.env
     depends_on:
       - postgres-db
-      - elastic:
+      - elastic
     links:
       - elastic
       - postgres-db
-
-
+  frontend:
+    build: ./ui
+    command: npm run dev
+    volumes:
+      - .:/usr/app
+      - /usr/app/node_modules
+    environment:
+      HOST: 0.0.0.0
+    ports:
+      - "8080:8080"
