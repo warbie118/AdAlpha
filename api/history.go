@@ -2,11 +2,12 @@ package api
 
 import (
 	"AdAlpha/db"
+	"AdAlpha/logger"
 	"AdAlpha/model"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 //Initialises endpoints
@@ -45,7 +46,7 @@ func GetInvestorHistory(w http.ResponseWriter, r *http.Request) {
 
 	err = dbCon.Pg.Close()
 	if err != nil {
-		fmt.Println("Error closing DB connection")
+		esLog.LogError(logger.CreateLog("ERROR", "Error closing DB connection", err.Error(), logger.Trace(), time.Now()))
 	}
 
 	respondWithJSON(w, http.StatusOK, history)

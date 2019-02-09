@@ -1,9 +1,11 @@
 package price_scrape
 
 import (
+	"AdAlpha/logger"
 	"fmt"
 	"github.com/gocolly/colly"
 	"strconv"
+	"time"
 )
 
 const (
@@ -14,6 +16,7 @@ const (
 	assetPriceElement = ".mod-ui-data-list__value"
 )
 
+var esLog = logger.GetInstance()
 var collector = colly.NewCollector(colly.AllowedDomains(allowedDomains))
 
 func GetCurrentPrice(shareCode string) (error, float64) {
@@ -35,13 +38,15 @@ func GetCurrentPrice(shareCode string) (error, float64) {
 	// Start scraping
 	err := collector.Visit(fmt.Sprintf(url, shareCode))
 	if err != nil {
-		fmt.Printf("Error scraping price for asset: %s", shareCode)
+		esLog.LogError(logger.CreateLog("ERROR", fmt.Sprintf("Error scraping price for asset: %s", shareCode),
+			err.Error(), logger.Trace(), time.Now()))
 		return err, price
 	}
 
 	price, err = strconv.ParseFloat(p, 64)
 	if err != nil {
-		fmt.Println("Error during string to float64 conversion")
+		esLog.LogError(logger.CreateLog("ERROR", "Error during string to float64 conversion",
+			err.Error(), logger.Trace(), time.Now()))
 		return err, price
 	}
 

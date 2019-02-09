@@ -2,10 +2,13 @@ package api
 
 import (
 	"AdAlpha/db"
+	"AdAlpha/logger"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
 )
+
+var esLog = logger.GetInstance()
 
 type Api struct {
 	Router *mux.Router
