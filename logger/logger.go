@@ -5,9 +5,15 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"gopkg.in/olivere/elastic.v5"
+	"github.com/olivere/elastic"
+	"io/ioutil"
 	"log"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
 	"runtime"
+	"sort"
 	"time"
 )
 
@@ -77,10 +83,75 @@ func GetInstance() Logger {
 	}
 	if !l.testMode {
 
-		client, err := elastic.NewClient(elastic.SetURL("http://localhost:9200"), elastic.SetSniff(false))
+		esUrl, err := url.Parse("http://elastic:9200")
 		if err != nil {
-			log.Panic(err)
+			log.Fatalf("invalid -url flag: %v", err)
 		}
+
+		if len(os.Args) > 1 {
+			switch os.Args[1] {
+			case "showenv":
+				log.Println("Environment")
+				env := os.Environ()
+				sort.Strings(env)
+				for _, e := range env {
+					log.Printf("- %s", e)
+				}
+				os.Exit(0)
+			}
+		}
+
+		log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+		log.Printf("Running %s\n", runtime.Version())
+		log.Printf("Version of github.com/olivere/elastic: %s\n", elastic.Version)
+
+		log.Printf("Looking up hostname %q", esUrl.Hostname())
+		ips, err := net.LookupIP(esUrl.Hostname())
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Lookup for hostname %q returns the following IPs:", esUrl.Hostname())
+		for _, ip := range ips {
+			log.Printf("%v", ip)
+		}
+
+		// Check ES version and status
+		{
+			log.Printf("Retrieving %s:", "http://elastic:9200")
+			res, err := http.Get("http://elastic:9200")
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer res.Body.Close()
+			body, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				log.Fatal(err)
+			}
+			log.Printf("%v", string(body))
+		}
+
+		// Check ES nodes configuration
+		{
+			log.Printf("Retrieving %s:", "http://elastic:9200/_nodes/http?pretty=true")
+			res, err := http.Get("http://elastic:9200/_nodes/http?pretty=true")
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer res.Body.Close()
+			body, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				log.Fatal(err)
+			}
+			log.Printf("%v", string(body))
+		}
+
+		log.Printf("Connecting to %s", "http://elastic:9200")
+		client, err := elastic.NewClient(elastic.SetURL("http://elastic:9200"))
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Connected to %s", "http://elastic:9200")
 
 		err = createIndexWithLogsIfDoesNotExist(client)
 		if err != nil {

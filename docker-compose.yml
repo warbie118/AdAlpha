@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3"
 
 services:
   postgres-db:
@@ -9,25 +9,39 @@ services:
       POSTGRES_PASSWORD: m0n3y
       POSTGRES_DB: adalpha
     ports:
-      - 5000:5432
+      - 5432:5432
     volumes:
       - ./postgres_db_data:/var/lib/postgresql/data
       - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
-    networks:
-      - ad-alpha
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.3
+    # This is the OSS image, which comes without X-Pack, ML etc.
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.0
+
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      - cluster.name=adalpha-es
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    # Some useful ulimits
+    ulimits:
+      nproc: 65536
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
     ports:
       - 9200:9200
-      - 9300:9300
     volumes:
-      - ./elastic_data:/usr/share/elasticsearch/data
-    networks:
-      - ad-alpha
+      # Make sure to create the ./data folder before starting
+      - .:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
   kibana:
-    image: docker.elastic.co/kibana/kibana:5.4.3
+    image: docker.elastic.co/kibana/kibana-oss:6.4.0
     container_name: kibana
     environment:
       - ELASTICSEARCH_URL=http://elastic:9200
@@ -35,10 +49,18 @@ services:
       - elastic
     ports:
       - 5601:5601
-    networks:
-      - ad-alpha
-
-networks:
-  ad-alpha:
+  backend:
+    build: .
+    ports:
+      - "3030:8000"
+    restart: always
+    env_file:
+      - prod.env
+    depends_on:
+      - postgres-db
+      - elastic:
+    links:
+      - elastic
+      - postgres-db
 
 
