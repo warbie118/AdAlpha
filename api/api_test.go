@@ -30,6 +30,8 @@ func SetTestingEnvVariables() {
 	err = os.Setenv("DB_USERNAME", "test")
 	err = os.Setenv("DB_PASSWORD", "test")
 	err = os.Setenv("DB_PORT", "5001")
+	err = os.Setenv("DB_HOST", "localhost")
+	err = os.Setenv("BASE_CC", "GBP")
 
 	if err != nil {
 		fmt.Println("Issue setting test env variables")

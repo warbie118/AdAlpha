@@ -14,6 +14,5 @@ services:
       - ./db-init-test.sql:/docker-entrypoint-initdb.d/db-init-test.sql
     networks:
       - ad-alpha_test
-
 networks:
   ad-alpha_test:
