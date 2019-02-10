@@ -20,6 +20,9 @@ export default {
   components: {
     Vuetable
   },
+  created () {
+    this.interval = setInterval(() => this.$refs.vuetable.refresh(), 2000)
+  },
   data () {
     return {
       fields: [
