@@ -18,8 +18,27 @@ const (
 
 var esLog = logger.GetInstance()
 var collector = colly.NewCollector(colly.AllowedDomains(allowedDomains))
+var lastUpdateTime = make(map[string]time.Time)
+var prices = make(map[string]float64)
 
 func GetCurrentPrice(shareCode string) (error, float64) {
+
+	checkPricesMapInitialised()
+
+	if time.Since(lastUpdateTime[shareCode]).Hours() > 1 {
+		err, price := scrapePriceFromFT(shareCode)
+		if err != nil {
+			return err, price
+		}
+		prices[shareCode] = price
+		lastUpdateTime[shareCode] = time.Now()
+
+	}
+
+	return nil, prices[shareCode]
+}
+
+func scrapePriceFromFT(shareCode string) (error, float64) {
 
 	var p string
 	var price float64
@@ -50,5 +69,21 @@ func GetCurrentPrice(shareCode string) (error, float64) {
 		return err, price
 	}
 
-	return err, price
+	return nil, price
+}
+
+func checkPricesMapInitialised() {
+	if len(lastUpdateTime) == 0 {
+		isins := [...]string{"IE00B52L4369", "GB00BQ1YHQ70", "GB00B3X7QG63", "GB00BG0QP828", "GB00BPN5P238", "IE00B1S74Q32"}
+
+		for _, isin := range isins {
+			err, price := scrapePriceFromFT(isin)
+			if err != nil {
+				esLog.LogError(logger.CreateLog("ERROR",
+					fmt.Sprintf("Getting current price of asset, isin: %s", isin), err.Error(), logger.Trace(), time.Now()))
+			}
+			prices[isin] = price
+			lastUpdateTime[isin] = time.Now()
+		}
+	}
 }
