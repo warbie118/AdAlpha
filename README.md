@@ -35,7 +35,17 @@ from your holding.
   * Vue.js UI
   * Postgress DB
 
-TODO - ADD BRIEF DESC HERE OF SOLUTION
+POSTGRES-DB - Stores the data
+
+ELASTICSEARCH - Stores the logs from backend service
+
+KIBANA - Allows you to visualise logs
+
+GO BACKEND - Go API which calculates investor instructions and stores in postgres-db
+
+VUEJS UI - UI to allow investor to complete investment instructions and see investment history
+
+View write-up.doc for more details
 
 ## Prerequisites
   * Docker
@@ -51,6 +61,11 @@ TODO - ADD BRIEF DESC HERE OF SOLUTION
   `go test`
   
 ### Deploy
-`docker-compose -f docker-compose.yml up`
+To run the app, run the script `./run-app.sh`
+
+Alternatively: 
+`docker-compose -f docker-compose.yml up && cd ui && npm install && npm run serve`
+
+Once running - go to http://localhost:8080/
 
   
