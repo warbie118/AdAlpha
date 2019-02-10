@@ -40,6 +40,7 @@ INSERT INTO investors VALUES (3, 'Mr', 'Tester');
 INSERT INTO investors VALUES (4, 'Mr', 'Testy');
 INSERT INTO investors VALUES (5, 'Mrs', 'Testy');
 INSERT INTO investors VALUES (6, 'Mrs', 'Tester');
+INSERT INTO investors VALUES (7, 'Mrs', 'Investor');
 
 INSERT INTO portfolio VALUES (1, 'IE00B52L4369', 44000);
 INSERT INTO portfolio VALUES (1, 'GB00BQ1YHQ70', 37931.03448275862069);
@@ -65,6 +66,12 @@ INSERT INTO portfolio VALUES (4, 'GB00B3X7QG63', 50);
 INSERT INTO portfolio VALUES (4, 'GB00BG0QP828', 50);
 INSERT INTO portfolio VALUES (4, 'GB00BPN5P238', 50);
 INSERT INTO portfolio VALUES (4, 'IE00B1S74Q32', 50);
+INSERT INTO portfolio VALUES (7, 'IE00B52L4369', 50);
+INSERT INTO portfolio VALUES (7, 'GB00BQ1YHQ70', 50);
+INSERT INTO portfolio VALUES (7, 'GB00B3X7QG63', 50);
+INSERT INTO portfolio VALUES (7, 'GB00BG0QP828', 50);
+INSERT INTO portfolio VALUES (7, 'GB00BPN5P238', 50);
+INSERT INTO portfolio VALUES (7, 'IE00B1S74Q32', 50);
 
 INSERT INTO instructions VALUES (nextval('instructions_instruction_id_seq'), 1, 'IE00B52L4369', 100, 'BUY', 'GBP', 500, 5);
 INSERT INTO instructions VALUES (nextval('instructions_instruction_id_seq'), 1, 'IE00B52L4369', 100, 'SELL', 'GBP', 200, 2);
