@@ -68,4 +68,6 @@ Alternatively:
 
 Once running - go to http://localhost:8080/
 
+To look at the application logs - go to http://localhost:5601/ and there will be an index called logs-adalpha
+
   
