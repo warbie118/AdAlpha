@@ -16,4 +16,11 @@ func TestGetInvestorPortfolio(t *testing.T) {
 	if len(portfolio) != 6 {
 		t.Errorf("Wrong amount of portfolio items, expected %d, got %d", 6, len(portfolio))
 	}
+
+	for _, p := range portfolio {
+
+		if p.CurrentPrice == 0 {
+			t.Error("Portfolio item does not contain current price of asset")
+		}
+	}
 }
