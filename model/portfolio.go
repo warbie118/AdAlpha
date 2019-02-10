@@ -8,10 +8,10 @@ import (
 )
 
 type Portfolio struct {
-	Isin         string  `json:"Isin"`
-	Asset        string  `json:"Asset"`
-	CurrentPrice float64 `json:"Current_price"`
-	Units        float64 `json:"Units"`
+	Isin  string `json:"Isin"`
+	Asset string `json:"Asset"`
+	//CurrentPrice float64 `json:"Current_price"`
+	Units float64 `json:"Units"`
 }
 
 //gets the investors portfolio and gets the current asset price
@@ -38,14 +38,16 @@ func GetInvestorPortfolio(db *sql.DB, id int) ([]Portfolio, error) {
 		portfolio = append(portfolio, p)
 	}
 
-	for i, p := range portfolio {
-		err, price := getCurrentPrice(p.Isin)
-		if err != nil {
-			esLog.LogError(logger.CreateLog("ERROR",
-				fmt.Sprintf("Getting current price of asset, isin: %s", p.Isin), err.Error(), logger.Trace(), time.Now()))
-		}
-		portfolio[i].CurrentPrice = price
-	}
+	// Problem scraping - Too many requests?
+
+	//for i, p := range portfolio {
+	//	err, price := getCurrentPrice(p.Isin)
+	//	if err != nil {
+	//		esLog.LogError(logger.CreateLog("ERROR",
+	//			fmt.Sprintf("Getting current price of asset, isin: %s", p.Isin), err.Error(), logger.Trace(), time.Now()))
+	//	}
+	//	portfolio[i].CurrentPrice = price
+	//}
 
 	return portfolio, nil
 }
