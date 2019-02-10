@@ -3,6 +3,7 @@ package main
 import (
 	"AdAlpha/api"
 	"AdAlpha/db"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 )
@@ -13,5 +14,6 @@ func main() {
 	d := db.Db{}
 	a.Initialise()
 	d.Initialise()
-	log.Fatal(http.ListenAndServe(":8000", a.Router))
+	handler := cors.Default().Handler(a.Router)
+	log.Fatal(http.ListenAndServe(":8000", handler))
 }
