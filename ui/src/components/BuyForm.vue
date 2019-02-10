@@ -74,6 +74,7 @@ export default {
         { headers: { 'Content-Type': 'application/json' } })
         .then(response => {})
         .then(this.close)
+        .then(this.$parent.showHistory = true)
         .catch(e => {
           this.errors.push(e)
         })

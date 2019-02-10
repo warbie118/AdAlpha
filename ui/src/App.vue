@@ -2,7 +2,7 @@
   <div id="app">
     <!--<img alt="Vue logo" src="./assets/logo.png">-->
     <portfolio></portfolio>
-    <history></history>
+    <history v-show="this.showHistory"></history>
   </div>
 </template>
 
@@ -15,6 +15,11 @@ export default {
   components: {
     Portfolio,
     History
+  },
+  data () {
+    return {
+      showHistory: true
+    }
   }
 }
 </script>

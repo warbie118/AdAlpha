@@ -11,12 +11,16 @@
         <template slot="actions" scope="props">
           <div class="custom-actions">
             <button class="ui basic button"
+                    style="padding: 4px"
                     @click="buy('buy-item', props.rowData, props.rowIndex)">Buy</button>
             <button class="ui basic button"
+                    style="padding: 4px"
                     @click="invest('invest-item', props.rowData, props.rowIndex)">Invest</button>
             <button class="ui basic button"
+                    style="padding: 4px"
                     @click="sell('sell-item', props.rowData, props.rowIndex)">Sell</button>
             <button class="ui basic button"
+                    style="padding: 4px"
                     @click="raise('raise-item', props.rowData, props.rowIndex)">Raise</button>
           </div>
         </template>
@@ -44,14 +48,10 @@
 
 <script>
 import Vuetable from 'vuetable-2/src/components/Vuetable'
-import Vue from 'vue'
-import CustomActions from './CustomActions'
 import BuyForm from './BuyForm'
 import SellForm from './SellForm'
 import InvestForm from './InvestForm'
 import RaiseForm from './RaiseForm'
-
-Vue.component('custom-actions', CustomActions)
 
 export default {
   components: {
@@ -60,6 +60,9 @@ export default {
     SellForm,
     InvestForm,
     RaiseForm
+  },
+  created () {
+    this.interval = setInterval(() => this.$refs.vuetable.refresh(), 2000)
   },
   data () {
     return {
@@ -98,30 +101,38 @@ export default {
     showBuy (isin) {
       this.isBuyVisible = true
       this.selectedIsin = isin
+      this.$parent.showHistory = false
     },
     closeBuy () {
       this.isBuyVisible = false
+      this.$parent.showHistory = true
     },
     showSell (isin) {
       this.isSellVisible = true
       this.selectedIsin = isin
+      this.$parent.showHistory = false
     },
     closeSell () {
       this.isSellVisible = false
+      this.$parent.showHistory = true
     },
     showInvest (isin) {
       this.isInvestVisible = true
       this.selectedIsin = isin
+      this.$parent.showHistory = false
     },
     closeInvest () {
       this.isInvestVisible = false
+      this.$parent.showHistory = true
     },
     showRaise (isin) {
       this.isRaiseVisible = true
       this.selectedIsin = isin
+      this.$parent.showHistory = false
     },
     closeRaise () {
       this.isRaiseVisible = false
+      this.$parent.showHistory = true
     }
   }
 }
